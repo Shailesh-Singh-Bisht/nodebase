@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
-import { Node, NodeProps, useReactFlow } from '@xyflow/react';
-import { memo, useState } from 'react';
-import { BaseExecutionNode } from '../bace-execution-node';
-import { AVAILABLE_MODELS, GeminiDialog, GeminiFormValues } from './dialog';
-import { useNodeStatus } from '../../hooks/use-node-status';
-import { HTTP_REQUEST_CHANNEL_NAME } from '@/inngest/channels/http-request';
-import { fetchHttpRequestRealtimeToken } from './action';
+import { Node, NodeProps, useReactFlow } from "@xyflow/react";
+import { memo, useState } from "react";
+import { BaseExecutionNode } from "../bace-execution-node";
+import { useNodeStatus } from "../../hooks/use-node-status";
+import { GEMINI_CHANNEL_NAME } from "@/inngest/channels/gemini";
+import { fetchGeminiRealtimeToken } from "./action";
+import { GeminiDialog, GeminiFormValues } from "./dialog";
 
 type GeminiNodeData = {
   variableName?: string;
-  model?: any;
   systemPrompt?: string;
   userPrompt?: string;
 };
@@ -23,9 +22,9 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
 
   const nodeStatus = useNodeStatus({
     nodeId: props.id,
-    channel: HTTP_REQUEST_CHANNEL_NAME,
-    topic: 'status',
-    refreshToken: fetchHttpRequestRealtimeToken,
+    channel: GEMINI_CHANNEL_NAME,
+    topic: "status",
+    refreshToken: fetchGeminiRealtimeToken,
   });
 
   const handleSubmit = (values: GeminiFormValues) => {
@@ -51,11 +50,8 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
 
   const nodeData = props.data;
   const description = nodeData?.userPrompt
-    ? `${nodeData.model || AVAILABLE_MODELS[0]}: ${nodeData.userPrompt.slice(
-        0,
-        50
-      )}...`
-    : 'Not configured';
+    ? `gemini-2.0-flash: ${nodeData.userPrompt.slice(0, 50)}...`
+    : "Not configured";
 
   return (
     <>
@@ -68,8 +64,8 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
       <BaseExecutionNode
         {...props}
         id={props.id}
-        icon='/logos/gemini.svg'
-        name='Gemini'
+        icon="/logos/gemini.svg"
+        name="Gemini"
         description={description}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}
@@ -79,4 +75,4 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
   );
 });
 
-GeminiNode.displayName = 'GeminiNode';
+GeminiNode.displayName = "GeminiNode";

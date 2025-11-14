@@ -1,9 +1,10 @@
-import { NodeType } from '@/generated/prisma';
-import { NodeExecutor } from '../types';
-import { manualTriggerExecutor } from '@/features/triggers/manual-trigger/executor';
-import { httpRequestExecutor } from '../components/http-request/executor';
-import { googleFormTriggerExecutor } from '@/features/triggers/google-form-trigger/executor';
-import { stripeTriggerExecutor } from '@/features/triggers/stripe-trigger/executor';
+import { NodeType } from "@/generated/prisma";
+import { NodeExecutor } from "../types";
+import { manualTriggerExecutor } from "@/features/triggers/manual-trigger/executor";
+import { httpRequestExecutor } from "../components/http-request/executor";
+import { googleFormTriggerExecutor } from "@/features/triggers/google-form-trigger/executor";
+import { stripeTriggerExecutor } from "@/features/triggers/stripe-trigger/executor";
+import { geminiExecutor } from "@/features/executions/components/gemini/executor";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
@@ -11,6 +12,9 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.HTTP_REQUEST]: httpRequestExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
+  [NodeType.GEMINI]: geminiExecutor,
+  [NodeType.OPENAI]: geminiExecutor, // TODO : Fix later,
+  [NodeType.ANTHROPIC]: geminiExecutor, // TODO, fix later
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
